@@ -1,7 +1,6 @@
 package log
 
 import (
-	"errors"
 	api "github.com/DucHoangManh/proglog/api/v1"
 	"io"
 	"os"
@@ -16,8 +15,6 @@ const (
 	defaultStoreSize = 1024
 	defaultIndexSize = 1024
 )
-
-var ErrOffsetOutOfRange = errors.New("offset out of range")
 
 type Log struct {
 	mu            sync.RWMutex
@@ -54,7 +51,7 @@ func (l *Log) Read(off uint64) (result *api.Record, err error) {
 		}
 	}
 	if segmentToRead == nil || segmentToRead.nextOffSet < off {
-		return nil, ErrOffsetOutOfRange
+		return nil, api.ErrOffsetOutOfRange{Offset: off}
 	}
 	return segmentToRead.Read(off)
 }
